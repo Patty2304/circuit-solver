@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuit Solver</title>
+
+  <!-- Google Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Chart.js for plots -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- WELCOME SCREEN -->
+    <section id="screen-welcome" class="screen active">
+      <div class="welcome-container">
+        <div class="welcome-main">
+          <h1 class="welcome-title">Circuit <span>Solver</span></h1>
+          <p class="welcome-sub">
+            An AI-assisted virtual lab for ECE students to explore circuits, operational amplifiers and filters.
+          </p>
+        </div>
+
+        <div class="welcome-bottom">
+          <div class="welcome-details">
+            <h2>Mini Project Details</h2>
+            <p><strong>Name:</strong> Aakash</p>
+            <p><strong>Roll No:</strong> 2300910310004</p>
+            <p><strong>Admission No:</strong> 23ECE063</p>
+            <p><strong>Batch:</strong> 2024-25</p>
+            <p><strong>Branch:</strong> ECE (5ECE-1)</p>
+          </div>
+          <button id="btn-start" class="btn primary-btn">
+            Let&apos;s Solve →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU SCREEN -->
+    <section id="screen-menu" class="screen">
+      <header class="top-bar">
+        <div>
+          <div class="badge">
+            <span class="badge-dot"></span>
+            ECE Virtual Lab
+          </div>
+          <h2 class="top-title">What do you want to solve?</h2>
+          <p class="top-subtitle">
+            Choose a category below to explore RLC circuits, operational amplifiers, or filters
+            with interactive explanations.
+          </p>
+        </div>
+        <button class="btn ghost-btn" id="btn-back-to-welcome">← Back</button>
+      </header>
+
+      <div class="menu-grid">
+        <div class="menu-card">
+          <h3>RLC Circuits</h3>
+          <p>
+            Analyse RC, RL and LC circuits. Compute time constants, resonance and currents with
+            AI-style reasoning.
+          </p>
+          <button class="btn secondary-btn" id="btn-go-rlc">Open RLC Solver</button>
+        </div>
+
+        <div class="menu-card">
+          <h3>Operational Amplifier</h3>
+          <p>
+            Solve inverting and non-inverting amplifier configurations, compute gain and output
+            voltage.
+          </p>
+          <button class="btn secondary-btn" id="btn-go-opamp">Open Op-Amp Solver</button>
+        </div>
+
+        <div class="menu-card">
+          <h3>Filters</h3>
+          <p>
+            Explore low-pass, high-pass and band-pass filters. Visualize frequency response with
+            graphs and calculators.
+          </p>
+          <button class="btn secondary-btn" id="btn-go-filters">Open Filter Lab</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RLC SCREEN -->
+    <section id="screen-rlc" class="screen">
+      <header class="top-bar">
+        <div>
+          <div class="badge">
+            <span class="badge-dot"></span>
+            RLC Circuit Solver
+          </div>
+          <h2 class="top-title">RC • RL • LC Analysis</h2>
+          <p class="top-subtitle">
+            Choose the circuit type, enter component values and get step-by-step explanations.
+          </p>
+        </div>
+        <div class="top-actions">
+          <button class="btn ghost-btn" id="btn-rlc-back-menu">← Menu</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <!-- Inputs -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Configuration</div>
+              <div class="card-caption">Select circuit and specify parameters.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rlcType">Circuit Type</label>
+            <select id="rlcType">
+              <option value="rc">RC Low-Pass (AC)</option>
+              <option value="rl">RL Step Response (DC)</option>
+              <option value="lc">LC Resonant Circuit</option>
+            </select>
+          </div>
+
+          <p class="hint" id="rlcHint">
+            Single-pole RC low-pass filter driven by sinusoidal input.
+          </p>
+
+          <div id="rlcInputs"></div>
+
+          <button class="btn primary-btn" id="btn-rlc-solve">Solve Circuit</button>
+        </section>
+
+        <!-- Results -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Analysis & Results</div>
+              <div class="card-caption">
+                Numerical values and interpretation for the selected circuit.
+              </div>
+            </div>
+          </div>
+
+          <div class="result-section" id="rlcResults">
+            <div class="empty-state">
+              Configure a circuit on the left and click <strong>Solve Circuit</strong>.
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+
+    <!-- OPAMP SCREEN -->
+    <section id="screen-opamp" class="screen">
+      <header class="top-bar">
+        <div>
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Operational Amplifier Solver
+          </div>
+          <h2 class="top-title">Inverting &amp; Non-Inverting Amplifiers</h2>
+          <p class="top-subtitle">
+            Enter the input voltage and resistor values to compute voltage gain and output.
+          </p>
+        </div>
+        <div class="top-actions">
+          <button class="btn ghost-btn" id="btn-opamp-back-menu">← Menu</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <!-- Inputs -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Op-Amp Configuration</div>
+          </div>
+
+          <div class="field">
+            <label for="opampMode">Mode</label>
+            <select id="opampMode">
+              <option value="inverting">Inverting Amplifier</option>
+              <option value="noninverting">Non-Inverting Amplifier</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="opampVin">Input Voltage V<sub>in</sub> (V)</label>
+            <input type="number" id="opampVin" value="1" step="0.1" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="opampR1">R<sub>1</sub> (kΩ)</label>
+              <input type="number" id="opampR1" value="10" step="0.1" />
+            </div>
+            <div class="field">
+              <label for="opampR2">R<sub>2</sub> (kΩ)</label>
+              <input type="number" id="opampR2" value="100" step="0.1" />
+            </div>
+          </div>
+
+          <button class="btn primary-btn" id="btn-opamp-solve">Solve Op-Amp</button>
+        </section>
+
+        <!-- Results -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Op-Amp Analysis</div>
+          </div>
+
+          <div class="result-section" id="opampResults">
+            <div class="empty-state">
+              Enter values on the left and click <strong>Solve Op-Amp</strong>.
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+
+    <!-- FILTER SCREEN -->
+    <section id="screen-filters" class="screen">
+      <header class="top-bar">
+        <div>
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Filter Lab
+          </div>
+          <h2 class="top-title">Low-Pass • High-Pass • Band-Pass</h2>
+          <p class="top-subtitle">
+            Design simple filters and visualize their frequency response using interactive plots and calculators.
+          </p>
+        </div>
+        <div class="top-actions">
+          <button class="btn ghost-btn" id="btn-filters-back-menu">← Menu</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <!-- Inputs -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Filter Configuration</div>
+          </div>
+
+          <div class="field">
+            <label for="filterType">Filter Type</label>
+            <select id="filterType">
+              <option value="lpf">RC Low-Pass Filter</option>
+              <option value="hpf">RC High-Pass Filter</option>
+              <option value="bpf">RLC Band-Pass Filter</option>
+            </select>
+          </div>
+
+          <p class="hint" id="filterHint">
+            Single-pole RC low-pass filter. Specify R and C to view cutoff and response.
+          </p>
+
+          <div id="filterInputs"></div>
+
+          <button class="btn primary-btn" id="btn-filter-solve">Analyze Filter</button>
+          <button class="btn secondary-btn" id="btn-filter-frequency">Calculate Frequencies</button>
+        </section>
+
+        <!-- Results + Graph -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">Filter Response</div>
+            <button class="icon-btn" id="btn-download-graph" title="Download graph as PNG">
+              ⬇
+            </button>
+          </div>
+
+          <div class="result-section" id="filterResults">
+            <div class="empty-state">
+              Configure a filter and click <strong>Analyze Filter</strong> to see its behavior.
+            </div>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="filterChart"></canvas>
+            <button class="btn download-btn" id="btn-download-graph-bottom">
+              ⬇ Download Graph (PNG)
+            </button>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <!-- Main JS -->
+  <script src="script.js" defer></script>
+</body>
+</html>
